@@ -38,6 +38,7 @@ int8_t parseArguments(int argc, char *argv[], char *flagArguments[])
                 flags |= CLCHASH;
                 cvalue = optarg;
                 flagArguments[0] = cvalue;
+                //printf("%s\n", flagArguments[0] );
                 break;
             case 'o':
                 flags |= SAVECSV;
@@ -47,7 +48,7 @@ int8_t parseArguments(int argc, char *argv[], char *flagArguments[])
             case 'v':
                 flags |= GENLOGF;
                 cvalue = optarg;
-                flagArguments[2] = cvalue;
+                //flagArguments[2] = cvalue;
                 break;
             case '?':
                 if (optopt == 'h' || optopt == 'o' || optopt == 'v')
@@ -63,5 +64,9 @@ int8_t parseArguments(int argc, char *argv[], char *flagArguments[])
                 exit(EXIT_FAILURE);
         }
     }
+    flagArguments[2] = argv[argc-1];
+    printf("%s\n", flagArguments[0] );
+    printf("%s\n", flagArguments[1] );
+    printf("%s\n", flagArguments[2] );
     return flags;
 }
