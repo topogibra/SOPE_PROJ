@@ -109,5 +109,5 @@ int8_t getHashArguments(char * str,char *hash[]){
       token = strtok(NULL, ",");
 
   }
-  return flags;
+  return --i;
 }

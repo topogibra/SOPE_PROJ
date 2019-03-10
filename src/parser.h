@@ -29,8 +29,10 @@ enum options {
 
 int8_t parseArguments(int argc, char *argv[], char *flagArguments[], size_t flags);
 
-
+//return mask with flags
 int8_t parseHashArguments(char * str);
+
+//return integer with the number of flags and the second parameter has the string representing the hashes
 int8_t getHashArguments(char * str,char * hash[]);
 
 

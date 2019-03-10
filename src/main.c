@@ -20,8 +20,7 @@ int main(int argc, char *argv[]) {
       */
       char * hash[3];
       hash_flags = getHashArguments(flagArguments[0],hash);
-      printf("%d\n",hash_flags );
-      for(int i = 0; i<3;i++){
+      for(int i = 0; i<hash_flags;i++){
         printf("%s\n",hash[i]);
       }
 
