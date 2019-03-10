@@ -74,3 +74,40 @@ int8_t parseArguments(int argc,
 
   return flags;
 }
+
+int8_t parseHashArguments(char * str){
+  uint8_t flags = 0;
+  char *token = strtok(str, ",");
+  while(token) {
+      if(!strcmp(token,"md5"))
+        flags |= MD5;
+      else if(!strcmp(token,"sha1"))
+        flags |= SHA1;
+      else if(!strcmp(token,"sha256"))
+        flags |= SHA256;
+      token = strtok(NULL, ",");
+  }
+  return flags;
+}
+int8_t getHashArguments(char * str,char *hash[]){
+  uint8_t flags = 0;
+  char *token = strtok(str, ",");
+  uint8_t i = 0;
+  while(token) {
+      if(!strcmp(token,"md5")){
+        flags |= MD5;
+        hash[i++] = token;
+      }
+      else if(!strcmp(token,"sha1")){
+        flags |= SHA1;
+        hash[i++] = token;
+      }
+      else if(!strcmp(token,"sha256")){
+        flags |= SHA256;
+        hash[i++] = token;
+      }
+      token = strtok(NULL, ",");
+
+  }
+  return flags;
+}

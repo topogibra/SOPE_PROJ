@@ -9,7 +9,24 @@ int main(int argc, char *argv[]) {
     {
         flagArguments[i] = "";
     }
-    
-    parseArguments(argc, argv, flagArguments, NO_FLAGS);
+
+    uint8_t flags = parseArguments(argc, argv, flagArguments, NO_FLAGS);
+    uint8_t hash_flags = 0;
+    if(flags & CLCHASH){
+      //escolher uma das duas
+      /*
+      hash_flags = parseHashArguments(flagArguments[0]);
+      printf("%d\n",hash_flags );
+      */
+      char * hash[3];
+      hash_flags = getHashArguments(flagArguments[0],hash);
+      printf("%d\n",hash_flags );
+      for(int i = 0; i<3;i++){
+        printf("%s\n",hash[i]);
+      }
+
+
+    }
+
     return 0;
 }
