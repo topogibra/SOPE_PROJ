@@ -5,7 +5,7 @@
 #ifndef FORENSIC_PARSER_H
 #define FORENSIC_PARSER_H
 #include <stdint.h>
-
+#include <stddef.h>
 
 /**
  * NOFLAGS = no flags used
@@ -21,7 +21,7 @@ enum options {
     GENLOGF = 8, // 01000 == 8
 };
 
-int8_t parseArguments(int argc, char *argv[], char *flagArguments[]);
+int8_t parseArguments(int argc, char *argv[], char *flagArguments[], size_t flags);
 
 
 #endif //FORENSIC_PARSER_H
