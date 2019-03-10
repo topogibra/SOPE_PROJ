@@ -4,7 +4,8 @@
 
 #ifndef FORENSIC_PARSER_H
 #define FORENSIC_PARSER_H
-#include <ntsid.h>
+#include <stdint.h>
+
 
 /**
  * NOFLAGS = no flags used

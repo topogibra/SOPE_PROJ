@@ -24,6 +24,11 @@ int8_t parseArguments(int argc, char *argv[], char *flagArguments[])
     int flags = NOFLAGS;
     char *cvalue = NULL;
 
+    if(argc == 1){
+      printf("Usage: %s [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>\n", argv[0]);
+      exit(EXIT_FAILURE);
+    }
+
     while ((opt = getopt(argc, argv, "rh:o:v:")) != -1) {
         switch (opt) {
             case 'r':
@@ -54,11 +59,9 @@ int8_t parseArguments(int argc, char *argv[], char *flagArguments[])
                     fprintf (stderr, "Unknown option `-%c'.\n", optopt);
                 }
             default:
-                flags = NOFLAGS;
                 printf("Usage: %s [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>\n", argv[0]);
                 exit(EXIT_FAILURE);
         }
     }
     return flags;
 }
-
