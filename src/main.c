@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -12,13 +13,15 @@
 
 #define NO_FLAGS 3
 
-void info(char * file){
+void info(char * file, int8_t flags, char * hash[], int8_t hash_flags){
 
   struct stat sb;
   if (lstat(file, &sb) == -1) {
     perror("lstat");
     exit(EXIT_FAILURE);
   }
+
+
 
   int link[2];
   char temp[4096];
@@ -105,7 +108,18 @@ int main(int argc, char *argv[]) {
       }*/
     }
 
-    info(flagArguments[NO_FLAGS-1]);
+    int output = STDOUT_FILENO;
+
+    if(flags & SAVECSV){
+      if((output = open(flagArguments[1], O_WRONLY | O_CREAT | O_TRUNC , 0777 ))==-1){
+        perror("open");
+        exit(1);
+      }
+      dup2(output,STDOUT_FILENO);
+    }
+
+
+    info(flagArguments[NO_FLAGS-1],flags,hash,hash_flags);
 
 
     return 0;
