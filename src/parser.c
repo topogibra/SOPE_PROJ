@@ -58,6 +58,7 @@ int8_t parseArguments(int argc,
         } else {
           fprintf(stderr, "Unknown option `-%c'.\n", optopt);
         }
+        __attribute__ ((fallthrough));
       default:
         printf(
             "Usage: %s [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] "
