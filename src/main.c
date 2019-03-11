@@ -53,7 +53,7 @@ void info(char * file, int8_t flags, char * hash[], int8_t hash_flags){
       exit(0);
     }
     printf(", %x", sb.st_mode);
-    printf(", %x", sb.st_mode & 0x00777 ); //permisions
+    printf(", %x", sb.st_mode & 0x0777 ); //permisions
     printf(", " );
     //print permissions
     for(int x = 0x00400,i = 0;x!=0;x>>=1,i++){
@@ -80,8 +80,14 @@ void info(char * file, int8_t flags, char * hash[], int8_t hash_flags){
     }
 
     printf(", %lld",(long long) sb.st_size); //size
-    printf(", %s",  ctime(&sb.st_mtime)); //modification
-    //printf(", %s",  ctime(&sb.st_ctime)); //status change
+    //printf(", %s",  asctime(gmtime(&sb.st_mtim.tv_sec))); //modification
+    printf(", ");
+    char date[21];
+    strftime(date, 21, "%Y-%m-%dT%H:%M:%S", localtime(&(sb.st_mtime))); //modification
+    printf("%s",date );
+    printf(", ");
+    strftime(date, 21, "%Y-%m-%dT%H:%M:%S", localtime(&(sb.st_ctime))); //status
+    printf("%s",date );
     printf("\n" );
   }
 }
