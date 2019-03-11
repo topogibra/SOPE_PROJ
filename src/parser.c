@@ -88,6 +88,11 @@ int8_t parseHashArguments(char * str){
         flags |= SHA1;
       else if(!strcmp(token,"sha256"))
         flags |= SHA256;
+      else{
+        printf("Flag not found: %s.\nAvailable : md5,sha1,sha256 .\n", token );
+        //TODO: define exit error codes
+        exit(1);
+      }
       token = strtok(NULL, ",");
   }
   return flags;
@@ -108,6 +113,11 @@ int8_t getHashArguments(char * str,char *hash[]){
       else if(!strcmp(token,"sha256")){
         flags |= SHA256;
         hash[i++] = token;
+      }
+      else{
+        printf("Flag not found: %s.\nAvailable : md5,sha1,sha256 .\n", token );
+        //TODO: define exit error codes
+        exit(1);
       }
       token = strtok(NULL, ",");
 
