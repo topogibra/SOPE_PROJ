@@ -20,7 +20,7 @@
 int8_t parseArguments(int argc,
                       char* argv[],
                       char* flagArguments[],
-                      size_t flags) {
+                      size_t num_flags) {
   int opt;
   char* cvalue = NULL;
 
@@ -31,7 +31,7 @@ int8_t parseArguments(int argc,
         argv[0]);
     exit(EXIT_FAILURE);
   }
-
+  int8_t flags = 0;
   while ((opt = getopt(argc, argv, "rh:o:v:")) != -1) {
     switch (opt) {
       case 'r':
@@ -67,11 +67,13 @@ int8_t parseArguments(int argc,
         exit(EXIT_FAILURE);
     }
   }
-  //   flagArguments[2] = argv[argc - 1];
-  for (size_t i = 0; i < flags; i++) {
+
+  flagArguments[num_flags-1] = argv[argc - 1];
+
+  /*for (size_t i = 0; i < num_flags; i++) {
       if (strcmp (flagArguments[i], ""))
         printf("%s\n", flagArguments[i]);
-  }
+  }*/
 
   return flags;
 }
@@ -110,5 +112,5 @@ int8_t getHashArguments(char * str,char *hash[]){
       token = strtok(NULL, ",");
 
   }
-  return --i;
+  return i;
 }

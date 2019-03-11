@@ -11,21 +11,19 @@ int main(int argc, char *argv[]) {
     }
 
     uint8_t flags = parseArguments(argc, argv, flagArguments, NO_FLAGS);
+
     uint8_t hash_flags = 0;
+    char * hash[3];
+
     if(flags & CLCHASH){
-      //escolher uma das duas
-      /*
-      hash_flags = parseHashArguments(flagArguments[0]);
-      printf("%d\n",hash_flags );
-      */
-      char * hash[3];
       hash_flags = getHashArguments(flagArguments[0],hash);
+      /*printf("Hashes : \n");
       for(int i = 0; i<hash_flags;i++){
         printf("%s\n",hash[i]);
-      }
-
-
+      }*/
     }
+
+
 
     return 0;
 }
