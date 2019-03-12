@@ -53,6 +53,12 @@ int md5(char *name, FILE* file)
 
     md5sumPath[strlen(md5sumPath)-1] = '\0';
 
+    if (pipe(fd) == -1)
+    {
+        perror("Error creating pipe: ");
+        exit(1);
+    }
+
     pid = fork();
     if (pid == -1)
     {
