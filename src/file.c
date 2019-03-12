@@ -2,7 +2,6 @@
 #include "file.h"
 
 
-
 void info(char * file_path, int8_t flags, char * hash[], int8_t hash_flags){
 
   struct stat sb;
@@ -14,7 +13,7 @@ void info(char * file_path, int8_t flags, char * hash[], int8_t hash_flags){
 
 
   int link[2];
-  char temp[4096];
+  char temp[128];
 
   if(pipe(link) == -1)
     exit(EXIT_FAILURE);
@@ -39,7 +38,6 @@ void info(char * file_path, int8_t flags, char * hash[], int8_t hash_flags){
       while((n_aux = read(link[0],temp + nbytes,sizeof(temp) - nbytes))>0){
         nbytes+=n_aux;
       }
-
 
       write(STDOUT_FILENO,temp,nbytes-1);
 
@@ -80,8 +78,6 @@ void info(char * file_path, int8_t flags, char * hash[], int8_t hash_flags){
         x>>=1;
 
     }
-
-    //printf(", %s",  asctime(gmtime(&sb.st_mtim.tv_sec))); //modification
     printf(", ");
     char date[21];
     strftime(date, 21, "%Y-%m-%dT%H:%M:%S", localtime(&(sb.st_mtime))); //modification
@@ -90,8 +86,6 @@ void info(char * file_path, int8_t flags, char * hash[], int8_t hash_flags){
     strftime(date, 21, "%Y-%m-%dT%H:%M:%S", localtime(&(sb.st_ctime))); //status
     printf("%s",date );
     printf("\n" );
-
-
 
   }
 }
