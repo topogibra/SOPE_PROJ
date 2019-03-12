@@ -43,19 +43,15 @@ int md5(char *name, FILE* file)
         int stat;
 
         close(fd[1]);
-        int nbytes;
-        while ((nbytes = read(fd[0], checksum, sizeof(checksum))) > 0)
+        int nbytes = 0;
+        int naux = 0;
+        while ((naux = read(fd[0], checksum + nbytes, sizeof(checksum)-nbytes)) > 0)
         {
-            printf("%d", nbytes);
-            sleep(1);
+            nbytes += naux;
         }
         wait(&stat);
         checksum[16] = '\0';
-
-
-
         close(fd[0]);
-
     }
 
     printf("%s", checksum);
