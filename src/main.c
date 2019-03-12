@@ -13,10 +13,10 @@
 
 #define NO_FLAGS 3
 
-void info(char * file, int8_t flags, char * hash[], int8_t hash_flags){
+void info(char * file_path, int8_t flags, char * hash[], int8_t hash_flags){
 
   struct stat sb;
-  if (lstat(file, &sb) == -1) {
+  if (lstat(file_path, &sb) == -1) {
     perror("lstat");
     exit(EXIT_FAILURE);
   }
@@ -46,10 +46,13 @@ void info(char * file, int8_t flags, char * hash[], int8_t hash_flags){
       wait(&status);
 
     }else{ //filho
-      dup2(link[1],STDOUT_FILENO);
+      if(dup2(link[1],STDOUT_FILENO)==1){
+        perror("dup2");
+        exit(1);
+      }
       close(link[0]);
       close(link[1]);
-      execl("/usr/bin/file","/usr/bin/file",file,NULL);
+      execl("/usr/bin/file","/usr/bin/file",file_path,NULL);
       exit(0);
     }
     printf(", %x", sb.st_mode);
@@ -108,10 +111,6 @@ int main(int argc, char *argv[]) {
 
     if(flags & CLCHASH){
       hash_flags = getHashArguments(flagArguments[0],hash);
-      /*printf("Hashes : \n");
-      for(int i = 0; i<hash_flags;i++){
-        printf("%s\n",hash[i]);
-      }*/
     }
 
     int output = STDOUT_FILENO;
@@ -121,12 +120,18 @@ int main(int argc, char *argv[]) {
         perror("open");
         exit(1);
       }
-      dup2(output,STDOUT_FILENO);
+      if(dup2(output,STDOUT_FILENO)==-1){
+        perror("dup2");
+        exit(1);
+      }
     }
 
 
     info(flagArguments[NO_FLAGS-1],flags,hash,hash_flags);
 
+    if(flags & SAVECSV){
+      close(output);
+    }
 
     return 0;
 }
