@@ -21,6 +21,7 @@ int8_t parseArguments(int argc,
                       char* argv[],
                       char* flagArguments[],
                       size_t num_flags) {
+  uint8_t n_opt = 1;
   int opt;
   char* cvalue = NULL;
 
@@ -32,22 +33,27 @@ int8_t parseArguments(int argc,
     exit(EXIT_FAILURE);
   }
   int8_t flags = 0;
-  while ((opt = getopt(argc, argv, "rh:o:v:")) != -1) {
+  while ((opt = getopt(argc, argv, "rh:o:v")) != -1) {
     switch (opt) {
       case 'r':
+        n_opt++;
         flags |= SRECURS;
         break;
       case 'h':
+        n_opt+=2;
         flags |= CLCHASH;
         cvalue = optarg;
         flagArguments[0] = cvalue;
         break;
       case 'o':
+        n_opt+=2;
         flags |= SAVECSV;
         cvalue = optarg;
         flagArguments[1] = cvalue;
+        //printf("%s\n",cvalue );
         break;
       case 'v':
+        n_opt++;
         flags |= GENLOGF;
         cvalue = optarg;
         // flagArguments[2] = cvalue;
@@ -67,8 +73,17 @@ int8_t parseArguments(int argc,
         exit(EXIT_FAILURE);
     }
   }
-
+  n_opt++;
   flagArguments[num_flags-1] = argv[argc - 1];
+
+  if(n_opt != argc){
+    printf("Wrong usage of flags.\n");
+    printf(
+        "Usage: %s [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] "
+        "<file|dir>\n",
+        argv[0]);
+    exit(EXIT_FAILURE);
+  }
 
   /*for (size_t i = 0; i < num_flags; i++) {
       if (strcmp (flagArguments[i], ""))
