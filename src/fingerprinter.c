@@ -8,13 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-char* cenas()
-{
-    char *teste = malloc(sizeof(char)*1024);
-    return teste;
-}
-
 int md5(char *name, FILE* file)
 {
     /**
@@ -23,8 +16,12 @@ int md5(char *name, FILE* file)
 
     pid_t pid;
     char checksum[1024];
-    char md5sumPath[1024];
     int fd[2];
+
+    if (pipe(fd) == -1)
+    {
+        exit(5);
+    }
 
     pid = fork();
     if (pid == -1)
@@ -44,13 +41,24 @@ int md5(char *name, FILE* file)
     else
     {
         int stat;
-        wait(&stat);
+
         close(fd[1]);
-        while (read(fd[0], checksum, sizeof(checksum)));
+        int nbytes;
+        while ((nbytes = read(fd[0], checksum, sizeof(checksum))) > 0)
+        {
+            printf("%d", nbytes);
+            sleep(1);
+        }
+        wait(&stat);
+        checksum[16] = '\0';
+
+
+
         close(fd[0]);
+
     }
 
-    md5sumPath[strlen(md5sumPath)-1] = '\0';
+    printf("%s", checksum);
 
     return 0;
 }
