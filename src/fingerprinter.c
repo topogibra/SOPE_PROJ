@@ -121,10 +121,9 @@ void exec_hash_command(int fd[], char* hash_program, char* file_name)
  * @param hash_program The hash program
  * @return The file's hash without newline character
  */
-char* get_hash_from_pipe(int fd[], char* hash_program)
+char* get_hash_from_pipe(int fd[], int checksum_size)
 {
     int stat;
-    int checksum_size = get_checksum_size(hash_program);
     char checksum[checksum_size + 1];
 
     if (close(fd[1]) != 0)
@@ -163,7 +162,7 @@ char *gen_checksum(char* file_name, char* hash_program)
     int fd_size = 2;
     int fd[fd_size];
     char* checksum;
-
+    int checksum_size = get_checksum_size(hash_program);
 
     check_file_exists(file_name);
     open_pipe(fd);
@@ -180,7 +179,7 @@ char *gen_checksum(char* file_name, char* hash_program)
     }
     else
     {
-        checksum = get_hash_from_pipe(fd, hash_program);
+        checksum = get_hash_from_pipe(fd, checksum_size);
     }
 
     return checksum;
