@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-void listdtree(char* path, int indent);
+void listdtree(char* path, void (*f)(char *));
 
 
 #endif
