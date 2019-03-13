@@ -2,14 +2,16 @@
 #include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-int main() {
-    char* checksum = gen_checksum("../src/main.c", "sha256sum");
-    printf("%s\n", checksum);
-    free(checksum);
 #define NO_FLAGS 3
 
 int main(int argc, char *argv[]) {
+    /**
+    char* checksum = gen_checksum("../src/main.c", "sha256sum");
+    printf("%s\n", checksum);
+    free(checksum);
+     */
+
+
     char *flagArguments[NO_FLAGS];
     for(size_t i = 0; i < NO_FLAGS; i++)
     {
