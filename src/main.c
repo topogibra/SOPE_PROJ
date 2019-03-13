@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     // }
     
     // parseArguments(argc, argv, flagArguments, NO_FLAGS);
-    printf("%s\n",argv[1]); 
+    // printf("%s\n",argv[1]); 
     listdtree(argv[1],1);
     return 0;
 }
