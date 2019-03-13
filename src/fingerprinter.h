@@ -6,7 +6,7 @@
 #define FORENSIC_FINGERPRINTER_H
 #include <stdio.h>
 
-int md5(char* name, FILE* file);
-
+int is_valid_hash_function(char* hash_command_name);
+char* gen_checksum(char *file_name, char *hash_command_name);
 
 #endif //FORENSIC_FINGERPRINTER_H
