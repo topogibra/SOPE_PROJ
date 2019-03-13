@@ -1,4 +1,4 @@
-
+#include "fingerprinter.h"
 #include "file.h"
 
 
@@ -85,6 +85,14 @@ void info(char * file_path, int8_t flags, char * hash[], int8_t hash_flags){
     printf(", ");
     strftime(date, 21, "%Y-%m-%dT%H:%M:%S", localtime(&(sb.st_ctime))); //status
     printf("%s",date );
+    for(int i = 0; i < hash_flags;++i){
+      if(!strcmp(hash[i],"md5"))
+        printf(", %s", gen_checksum(file_path,"md5sum"));
+      else if(!strcmp(hash[i],"sha1"))
+        printf(", %s", gen_checksum(file_path,"sha1sum"));
+      else if(!strcmp(hash[i],"sha256"))
+        printf(", %s", gen_checksum(file_path,"sha256sum"));
+    }
     printf("\n" );
 
   }
