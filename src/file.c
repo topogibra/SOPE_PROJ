@@ -2,7 +2,9 @@
 #include "file.h"
 
 
-void info(char * file_path, int8_t flags, char * hash[], int8_t hash_flags){
+
+
+void info(char * file_path,char * hash[], int8_t hash_flags){
 
   struct stat sb;
   if (lstat(file_path, &sb) == -1) {
