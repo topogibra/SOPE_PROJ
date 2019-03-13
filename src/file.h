@@ -18,11 +18,9 @@
 #include <time.h>
 #include <sys/sysmacros.h>
 
-int8_t hash_flags;
-char * hash[3];
 
-
-void info(char * file_path,char * hash[], int8_t hash_flags);
+void setFlags(char * hash[], int8_t hash_flags);
+void info(char * file_path);
 
 
 

@@ -1,10 +1,16 @@
 #include "fingerprinter.h"
 #include "file.h"
 
+static int8_t num_flags = 0;
+static char * hash_passed[3];
+
+void setFlags(char * hash[], int8_t hash_flags){
+  num_flags = hash_flags;
+  memcpy(hash_passed,hash,sizeof(char *) * num_flags);
+}
 
 
-
-void info(char * file_path,char * hash[], int8_t hash_flags){
+void info(char * file_path){
 
   struct stat sb;
   if (lstat(file_path, &sb) == -1) {
@@ -87,12 +93,12 @@ void info(char * file_path,char * hash[], int8_t hash_flags){
     printf(", ");
     strftime(date, 21, "%Y-%m-%dT%H:%M:%S", localtime(&(sb.st_ctime))); //status
     printf("%s",date );
-    for(int i = 0; i < hash_flags;++i){
-      if(!strcmp(hash[i],"md5"))
+    for(int i = 0; i < num_flags;++i){
+      if(!strcmp(hash_passed[i],"md5"))
         printf(", %s", gen_checksum(file_path,"md5sum"));
-      else if(!strcmp(hash[i],"sha1"))
+      else if(!strcmp(hash_passed[i],"sha1"))
         printf(", %s", gen_checksum(file_path,"sha1sum"));
-      else if(!strcmp(hash[i],"sha256"))
+      else if(!strcmp(hash_passed[i],"sha256"))
         printf(", %s", gen_checksum(file_path,"sha256sum"));
     }
     printf("\n" );

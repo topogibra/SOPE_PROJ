@@ -45,8 +45,8 @@ int main(int argc, char *argv[]) {
         exit(1);
       }
     }
-
-    info(flagArguments[NO_FLAGS-1],hash,hash_flags);
+    setFlags(hash,hash_flags);
+    info(flagArguments[NO_FLAGS-1]);
 
     if(flags & SAVECSV){
       close(output);
