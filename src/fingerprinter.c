@@ -94,7 +94,7 @@ int get_checksum_size(char* hash_program)
     int checksum_size;
     if ((checksum_size = is_valid_hash_function(hash_program)) == 0)
     {
-        perror("Invalid hash function");
+        printf("Invalid hash function\n");
         exit(1);
     }
     return checksum_size;
