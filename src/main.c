@@ -26,11 +26,11 @@ int main(int argc, char *argv[]) {
 
     uint8_t flags = parseArguments(argc, argv, flagArguments, NO_FLAGS);
 
-    uint8_t hash_flags = 0;
-    char * hash[3];
+    uint8_t num_hash = 0; // number of hashes passed as argument
+    char * hash[3]; // array with the hashes strings
 
     if(flags & CLCHASH){
-      hash_flags = getHashArguments(flagArguments[0],hash);
+      num_hash = getHashArguments(flagArguments[0],hash);
     }
 
     int output = STDOUT_FILENO;
@@ -45,7 +45,9 @@ int main(int argc, char *argv[]) {
         exit(1);
       }
     }
-    setFlags(hash,hash_flags);
+
+    setFlags(hash,num_hash);
+    
     info(flagArguments[NO_FLAGS-1]);
 
     if(flags & SAVECSV){
