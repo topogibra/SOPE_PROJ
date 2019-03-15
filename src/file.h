@@ -20,6 +20,9 @@
 
 
 void setFlags(char * hash[], int8_t hash_flags);
+void display_stat_info(struct stat *sb);
+void display_fingerprints(char * file_path);
+void display_file_type(char * file_path);
 void info(char * file_path);
 
 
