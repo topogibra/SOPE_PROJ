@@ -1,12 +1,13 @@
 #include <limits.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "dirtree.h"
 #include "parser.h"
 
 #define NO_FLAGS 3
 
 void f(char* path) {
-  printf("%s\n", path);
+  printf("%s    PID:%d PARENT:%d\n", path, getpid(), getppid());
 }
 
 int main(int argc, char* argv[]) {
@@ -18,6 +19,7 @@ int main(int argc, char* argv[]) {
 
   // parseArguments(argc, argv, flagArguments, NO_FLAGS);
   // printf("%s\n",argv[1]);
+  // printf("PARENT PID: %d\n", getpid());
   listdtree(argv[1], f);
   return 0;
 }

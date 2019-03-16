@@ -1,6 +1,7 @@
 #include "dirtree.h"
 #include <dirent.h>
 #include <limits.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,44 +13,44 @@
 void listdtree(char* path, void (*f)(char*)) {
   DIR* dir;
   struct dirent* entry;
+  bool child = false;
   chdir(path);
-  if (!(dir = opendir("."))) {
+
+  if ((dir = opendir(".")) == NULL) {
     return;
   }
 
-  while ((entry = readdir(dir)) !=
-         NULL) {  // Cycles through the next entry in the dirtree
-    struct stat ftype;
+  while ((entry = readdir(dir)) != NULL) {
     if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")) {
       continue;
     }
-    // printf("%s/%s    %d\n", path, entry->d_name, getpid());
-    stat(entry->d_name, &ftype);
-    if (S_ISDIR(ftype.st_mode)) {
+    if (entry->d_type == DT_DIR) {
+      char tmp[PATH_MAX];
+      getcwd(tmp, PATH_MAX);
+      strcat(tmp, "/");
+      strcat(tmp, entry->d_name);
       pid_t pid = fork();
-      if (pid == 0) {        // child
-        char tmp[PATH_MAX];  // Path of the directory
-        strcpy(tmp, ".");
-        strcat(tmp, "/");
-        strcat(tmp, entry->d_name);
-        // printf("tmp = %s    %d\n", tmp, getpid());
+      if (pid == 0) {
+        child = true;
+        // f(tmp);
         chdir(tmp);
-        listdtree(tmp, f);  // Runs through the new path
-        exit(0);
+        closedir(dir);
+        dir = opendir(".");
+        // printf("%d\n", entry->d_type == DT_DIR);
       } else {
-        int waitst;
-
-        wait(&waitst);
+        wait(NULL);
       }
-
     } else {
-      char entry_path[PATH_MAX];
-      getcwd(entry_path,PATH_MAX);
-      strcat(entry_path, "/");
-      strcat(entry_path, entry->d_name);
-      f(entry_path);
+      char tmp[PATH_MAX];
+      getcwd(tmp, PATH_MAX);
+      strcat(tmp, "/");
+      strcat(tmp, entry->d_name);
+      f(tmp);
     }
   }
-
+  if (child) {
+    exit(0);
+  }
+  while(wait(NULL) > 0){}
   closedir(dir);
 }

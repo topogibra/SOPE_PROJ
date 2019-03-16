@@ -6,5 +6,4 @@
 
 void listdtree(char* path, void (*f)(char *));
 
-
 #endif
