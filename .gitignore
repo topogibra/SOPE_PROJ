@@ -1,5 +1,10 @@
 .idea
 cmake-build-debug
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+forensic
 .vscode/*
 build/*
 CMakeCache.txt

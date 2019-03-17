@@ -1,25 +1,34 @@
-#include <limits.h>
-#include <stdio.h>
-#include <unistd.h>
-#include "dirtree.h"
+#include "fingerprinter.h"
 #include "parser.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 #define NO_FLAGS 3
 
-void f(char* path) {
-  printf("%s    PID:%d PARENT:%d\n", path, getpid(), getppid());
-}
+int main(int argc, char *argv[]) {
+    /**
+    char* checksum = gen_checksum("../src/main.c", "sha256sum");
+    printf("%s\n", checksum);
+    free(checksum);
+     */
 
-int main(int argc, char* argv[]) {
-  // char *flagArguments[NO_FLAGS];
-  // for(size_t i = 0; i < NO_FLAGS; i++)
-  // {
-  //     flagArguments[i] = "";
-  // }
 
-  // parseArguments(argc, argv, flagArguments, NO_FLAGS);
-  // printf("%s\n",argv[1]);
-  // printf("PARENT PID: %d\n", getpid());
-  listdtree(argv[1], f);
-  return 0;
+    char *flagArguments[NO_FLAGS];
+    for(size_t i = 0; i < NO_FLAGS; i++)
+    {
+        flagArguments[i] = "";
+    }
+
+    uint8_t flags = parseArguments(argc, argv, flagArguments, NO_FLAGS);
+
+    uint8_t hash_flags = 0;
+    char * hash[3];
+
+    if(flags & CLCHASH){
+      hash_flags = getHashArguments(flagArguments[0],hash);
+      /*printf("Hashes : \n");
+      for(int i = 0; i<hash_flags;i++){
+        printf("%s\n",hash[i]);
+      }*/
+    }
+    return 0;
 }

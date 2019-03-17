@@ -20,7 +20,7 @@
 int8_t parseArguments(int argc,
                       char* argv[],
                       char* flagArguments[],
-                      size_t flags) {
+                      size_t num_flags) {
   int opt;
   char* cvalue = NULL;
 
@@ -31,7 +31,7 @@ int8_t parseArguments(int argc,
         argv[0]);
     exit(EXIT_FAILURE);
   }
-
+  int8_t flags = 0;
   while ((opt = getopt(argc, argv, "rh:o:v:")) != -1) {
     switch (opt) {
       case 'r':
@@ -58,6 +58,7 @@ int8_t parseArguments(int argc,
         } else {
           fprintf(stderr, "Unknown option `-%c'.\n", optopt);
         }
+        /* fall through */
       default:
         printf(
             "Usage: %s [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] "
@@ -66,11 +67,60 @@ int8_t parseArguments(int argc,
         exit(EXIT_FAILURE);
     }
   }
-  //   flagArguments[2] = argv[argc - 1];
-  for (size_t i = 0; i < flags; i++) {
+
+  flagArguments[num_flags-1] = argv[argc - 1];
+
+  /*for (size_t i = 0; i < num_flags; i++) {
       if (strcmp (flagArguments[i], ""))
         printf("%s\n", flagArguments[i]);
-  }
+  }*/
 
   return flags;
+}
+
+int8_t parseHashArguments(char * str){
+  uint8_t flags = 0;
+  char *token = strtok(str, ",");
+  while(token) {
+      if(!strcmp(token,"md5"))
+        flags |= MD5;
+      else if(!strcmp(token,"sha1"))
+        flags |= SHA1;
+      else if(!strcmp(token,"sha256"))
+        flags |= SHA256;
+      else{
+        printf("Flag not found: %s.\nAvailable : md5,sha1,sha256 .\n", token );
+        //TODO: define exit error codes
+        exit(1);
+      }
+      token = strtok(NULL, ",");
+  }
+  return flags;
+}
+int8_t getHashArguments(char * str,char *hash[]){
+  uint8_t flags = 0;
+  char *token = strtok(str, ",");
+  uint8_t i = 0;
+  while(token) {
+      if(!strcmp(token,"md5")){
+        flags |= MD5;
+        hash[i++] = token;
+      }
+      else if(!strcmp(token,"sha1")){
+        flags |= SHA1;
+        hash[i++] = token;
+      }
+      else if(!strcmp(token,"sha256")){
+        flags |= SHA256;
+        hash[i++] = token;
+      }
+      else{
+        printf("Flag not found: %s.\nAvailable : md5,sha1,sha256 .\n", token );
+        //TODO: define exit error codes
+        exit(1);
+      }
+      token = strtok(NULL, ",");
+
+  }
+  return i;
 }

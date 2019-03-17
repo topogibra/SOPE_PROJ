@@ -6,6 +6,12 @@
 #define FORENSIC_PARSER_H
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
+
+#define NUMBER_HASH 3
+#define MD5 1
+#define SHA1 2
+#define SHA256 4
 
 /**
  * NOFLAGS = no flags used
@@ -22,6 +28,12 @@ enum options {
 };
 
 int8_t parseArguments(int argc, char *argv[], char *flagArguments[], size_t flags);
+
+//return mask with flags
+int8_t parseHashArguments(char * str);
+
+//return integer with the number of flags and the second parameter has the string representing the hashes
+int8_t getHashArguments(char * str,char * hash[]);
 
 
 #endif //FORENSIC_PARSER_H
