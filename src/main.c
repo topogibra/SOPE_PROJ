@@ -1,8 +1,14 @@
-#include "fingerprinter.h"
+
 #include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "file.h"
+
+
 #define NO_FLAGS 3
+
+
 
 int main(int argc, char *argv[]) {
     /**
@@ -20,15 +26,33 @@ int main(int argc, char *argv[]) {
 
     uint8_t flags = parseArguments(argc, argv, flagArguments, NO_FLAGS);
 
-    uint8_t hash_flags = 0;
-    char * hash[3];
+    uint8_t num_hash = 0; // number of hashes passed as argument
+    char * hash[3]; // array with the hashes strings
 
     if(flags & CLCHASH){
-      hash_flags = getHashArguments(flagArguments[0],hash);
-      /*printf("Hashes : \n");
-      for(int i = 0; i<hash_flags;i++){
-        printf("%s\n",hash[i]);
-      }*/
+      num_hash = getHashArguments(flagArguments[0],hash);
     }
+
+    int output = STDOUT_FILENO;
+
+    if(flags & SAVECSV){
+      if((output = open(flagArguments[1], O_WRONLY | O_CREAT | O_TRUNC , 0777 ))==-1){
+        perror("open");
+        exit(1);
+      }
+      if(dup2(output,STDOUT_FILENO)==-1){
+        perror("dup2");
+        exit(1);
+      }
+    }
+
+    setFlags(hash,num_hash);
+    
+    info(flagArguments[NO_FLAGS-1]);
+
+    if(flags & SAVECSV){
+      close(output);
+    }
+
     return 0;
 }

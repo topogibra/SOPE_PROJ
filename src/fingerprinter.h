@@ -5,6 +5,11 @@
 #ifndef FORENSIC_FINGERPRINTER_H
 #define FORENSIC_FINGERPRINTER_H
 #include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+#include <string.h>
+
 
 enum HashArraySizes
 {
