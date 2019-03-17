@@ -10,14 +10,22 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void listdtree(char* path, void (*f)(char*)) {
+u_int8_t flag = 0x0;
+
+int listdtree(char* path, void (*f)(char*)) {
+  //Safeguard to maintain the current working directory
+  printf("%x\n",flag);
+  char current_dir[PATH_MAX];
   DIR* dir;
   struct dirent* entry;
-  bool child = false;
+  bool is_child = false;
+
+  getcwd(current_dir,PATH_MAX);
+
   chdir(path);
 
   if ((dir = opendir(".")) == NULL) {
-    return;
+    return 139;
   }
 
   while ((entry = readdir(dir)) != NULL) {
@@ -25,32 +33,45 @@ void listdtree(char* path, void (*f)(char*)) {
       continue;
     }
     if (entry->d_type == DT_DIR) {
-      char tmp[PATH_MAX];
-      getcwd(tmp, PATH_MAX);
-      strcat(tmp, "/");
-      strcat(tmp, entry->d_name);
-      pid_t pid = fork();
-      if (pid == 0) {
-        child = true;
-        // f(tmp);
-        chdir(tmp);
-        closedir(dir);
-        dir = opendir(".");
-        // printf("%d\n", entry->d_type == DT_DIR);
-      } else {
-        wait(NULL);
+      char newpath[PATH_MAX];
+      getcwd(newpath, PATH_MAX);
+      strcat(newpath, "/");
+      strcat(newpath, entry->d_name);
+      if(flag & R_LIST){
+        pid_t pid = fork();
+        if (pid == 0) {
+          is_child = true;
+          if(flag & A_DIR){
+            f(newpath);
+          }
+          chdir(newpath);
+          closedir(dir);
+          dir = opendir(".");
+        }
       }
     } else {
-      char tmp[PATH_MAX];
-      getcwd(tmp, PATH_MAX);
-      strcat(tmp, "/");
-      strcat(tmp, entry->d_name);
-      f(tmp);
+      char newpath[PATH_MAX];
+      getcwd(newpath, PATH_MAX);
+      strcat(newpath, "/");
+      strcat(newpath, entry->d_name);
+      f(newpath);
     }
   }
-  if (child) {
+  
+  while (wait(NULL) > 0) {
+  }
+
+  if (is_child) {
+    //Just to make sure no child processes become orphan
+    while (wait(NULL) > 0) {}
     exit(0);
   }
-  while(wait(NULL) > 0){}
   closedir(dir);
+  chdir(current_dir);
 }
+
+void setLDTflag(u_int8_t fla){
+  flag = fla;
+}
+
+
