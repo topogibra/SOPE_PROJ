@@ -13,14 +13,13 @@
 u_int8_t flag = 0x0;
 
 int listdtree(char* path, void (*f)(char*)) {
-  //Safeguard to maintain the current working directory
-  printf("%x\n",flag);
+  // Safeguard to maintain the current working directory
   char current_dir[PATH_MAX];
   DIR* dir;
   struct dirent* entry;
   bool is_child = false;
 
-  getcwd(current_dir,PATH_MAX);
+  getcwd(current_dir, PATH_MAX);
 
   chdir(path);
 
@@ -37,11 +36,11 @@ int listdtree(char* path, void (*f)(char*)) {
       getcwd(newpath, PATH_MAX);
       strcat(newpath, "/");
       strcat(newpath, entry->d_name);
-      if(flag & R_LIST){
+      if (flag & R_LIST) {
         pid_t pid = fork();
         if (pid == 0) {
           is_child = true;
-          if(flag & A_DIR){
+          if (flag & A_DIR) {
             f(newpath);
           }
           chdir(newpath);
@@ -57,21 +56,21 @@ int listdtree(char* path, void (*f)(char*)) {
       f(newpath);
     }
   }
-  
+
   while (wait(NULL) > 0) {
   }
 
   if (is_child) {
-    //Just to make sure no child processes become orphan
-    while (wait(NULL) > 0) {}
+    // Just to make sure no child processes become orphan
+    while (wait(NULL) > 0) {
+    }
     exit(0);
   }
   closedir(dir);
   chdir(current_dir);
+  return 0;
 }
 
-void setLDTflag(u_int8_t fla){
+void setLDTflag(u_int8_t fla) {
   flag = fla;
 }
-
-
