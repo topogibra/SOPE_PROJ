@@ -3,10 +3,6 @@
 //
 
 #include "fingerprinter.h"
-#include <unistd.h>
-#include <sys/wait.h>
-#include <stdlib.h>
-#include <string.h>
 
 /**
  * Checks if the provided hash_program is a valid program that hashes a file.
