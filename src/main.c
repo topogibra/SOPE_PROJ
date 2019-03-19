@@ -1,23 +1,25 @@
-
-#include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "parser.h"
 #include "file.h"
-
+#include "log.h"
 
 #define NO_FLAGS 3
 
+int main() {
 
+    FILE* file = NULL;
+    open_file(&file, "log_entries.txt", "a");
+    log_activity(file, "Computed log\n");
+    close_file(file);
 
-int main(int argc, char *argv[]) {
     /**
     char* checksum = gen_checksum("../src/main.c", "sha256sum");
     printf("%s\n", checksum);
     free(checksum);
      */
 
-
+    /*
     char *flagArguments[NO_FLAGS];
     for(size_t i = 0; i < NO_FLAGS; i++)
     {
@@ -53,6 +55,7 @@ int main(int argc, char *argv[]) {
     if(flags & SAVECSV){
       close(output);
     }
+    */
 
     return 0;
 }
