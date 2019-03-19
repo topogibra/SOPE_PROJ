@@ -68,9 +68,10 @@ char * display_fingerprints(char * file_path){
     else if(!strcmp(hash_passed[i],"sha256"))
       temp = gen_checksum(file_path,"sha256sum");
     if(temp != NULL){
+      strcat(hash,", ");
       strcat(hash,temp);
       free(temp);
-      hash = NULL;
+      temp = NULL;
     }
   }
   return hash;
