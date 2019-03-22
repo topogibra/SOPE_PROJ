@@ -6,8 +6,15 @@
 #include <time.h>
 #include <unistd.h>
 
+
 /**
- * Opens a file and checks for errors. 
+ * @brief Opens a file and checks for errors
+ *
+ * @param file The file being opened
+ * @param pathname The file location
+ * @param mode The mode which fopen will run on
+ *
+ * @return 0 if the program executed correctly
  */
 int open_file(FILE** file, const char *pathname, const char *mode) {
     if((*file=fopen(pathname, mode)) == NULL) {
@@ -17,8 +24,14 @@ int open_file(FILE** file, const char *pathname, const char *mode) {
     return 0;
 }
 
+
 /**
- * Closes a file and checks for errors
+ * @brief Closes a file and checks for errors
+ *
+ * @param file The file being closed
+ *
+ * @return 0 if the program executed correctly
+
  */
 int close_file(FILE* file) {
     int return_value;
@@ -29,8 +42,12 @@ int close_file(FILE* file) {
     return 0;
 }
 
+
+
 /**
- * Sets constant time_value with the specified value
+ * @brief Gets the current time of the system
+ *
+ * @return The time of the system
  */
 double get_time() {
     clock_t time;
@@ -42,8 +59,11 @@ double get_time() {
 }
 
 /**
- * Writes the log info of the program (provided by event_description) 
- * to a file
+ * @brief Writes to a file information about a certain program action
+ *
+ * @param file The file that will receive the log info
+ * @param initialTime The time when the program started executing
+ * @param eventDescription Text describing the information that will be written to the file
  */
 void log_activity(FILE* file, double initialTime, char* eventDescription) {
     char buffer[1024];
