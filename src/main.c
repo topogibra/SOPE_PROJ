@@ -7,17 +7,20 @@
 #define NO_FLAGS 3
 
 int main() {
-
     FILE* file = NULL;
-    open_file(&file, "log_entries.txt", "a");
-    log_activity(file, "Computed log\n");
-    close_file(file);
-
-    /**
-    char* checksum = gen_checksum("../src/main.c", "sha256sum");
+    double initialTimeStamp = get_time();
+    //open_file(&file, "log_entries.txt", "a");
+    ////close_file(file);
+    int j;
+    for (int i=0; i < 9951969; i++)
+        for (int k=0; k < 35; k++)
+            j = 1;
+/*
+    char* checksum = gen_checksum("src/main.c", "sha256sum");
     printf("%s\n", checksum);
     free(checksum);
-     */
+    */
+    log_activity(file, initialTimeStamp, "Computed log\n");
 
     /*
     char *flagArguments[NO_FLAGS];

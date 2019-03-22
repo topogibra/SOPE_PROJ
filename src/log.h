@@ -4,9 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
+#include <sys/times.h>
 
 int open_file(FILE** file, const char *pathname, const char *mode);
 int close_file(FILE* file);
-void log_activity(FILE* file, char* event_description);
+double get_time();
+void log_activity(FILE* file, double initialTime, char* eventDescription);
 
 #endif

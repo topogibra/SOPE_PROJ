@@ -8,6 +8,7 @@ int open_file(FILE** file, const char *pathname, const char *mode) {
         perror("Failed to open file");
         exit(1);
     }
+    return 0;
 }
 
 /**
@@ -23,12 +24,28 @@ int close_file(FILE* file) {
 }
 
 /**
+ * Sets constant time_value with the specified value
+ */
+double get_time() {
+    clock_t time;
+    if((time=clock()) == -1) {
+        perror("Couldn not get time");
+        exit(1);
+    }
+    return (double) time/CLOCKS_PER_SEC;
+}
+
+/**
  * Writes the log info of the program (provided by event_description) 
  * to a file
  */
-void log_activity(FILE* file, char* event_description) {
+void log_activity(FILE* file, double initialTime, char* eventDescription) {
     char buffer[1024];
+    double currentTime = get_time();
+    double timeStamp = (currentTime - initialTime);
     pid_t pid = getpid();
-    sprintf(buffer, "%d - %s", pid, event_description);
+
+    sprintf(buffer, "%4.20f - %d - %s", (double)timeStamp, pid, eventDescription);
     printf("%s", buffer);
 }
+
