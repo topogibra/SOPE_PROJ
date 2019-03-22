@@ -35,7 +35,7 @@ int close_file(FILE* file) {
 double get_time() {
     clock_t time;
     if((time=clock()) == -1) {
-        perror("Couldn not get time");
+        perror("Could not get time");
         exit(1);
     }
     return (double) time/CLOCKS_PER_SEC;

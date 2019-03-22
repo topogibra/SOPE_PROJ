@@ -3,9 +3,6 @@
 
 #include <stdio.h>
 
-
-
-
 int open_file(FILE** file, const char *pathname, const char *mode);
 int close_file(FILE* file);
 double get_time();
