@@ -1,4 +1,5 @@
 #include "log.h"
+#include <string.h>
 
 /**
  * Opens a file and checks for errors. 
@@ -45,7 +46,7 @@ void log_activity(FILE* file, double initialTime, char* eventDescription) {
     double timeStamp = (currentTime - initialTime);
     pid_t pid = getpid();
 
-    if(eventDescription == "") {
+    if(strcmp(eventDescription, "") == 0) {
         printf("Event description cannot be an empty string");
         exit(1);
     }
