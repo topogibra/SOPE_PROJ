@@ -45,6 +45,11 @@ void log_activity(FILE* file, double initialTime, char* eventDescription) {
     double timeStamp = (currentTime - initialTime);
     pid_t pid = getpid();
 
+    if(eventDescription == "") {
+        printf("Event description cannot be an empty string");
+        exit(1);
+    }
+
     sprintf(buffer, "%f - %d - %s", timeStamp, pid, eventDescription);
     fprintf(file, "%s", buffer);
 }
