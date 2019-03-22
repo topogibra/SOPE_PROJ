@@ -1,5 +1,10 @@
 #include "log.h"
+#include <stdlib.h>
 #include <string.h>
+#include <sys/times.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
 
 /**
  * Opens a file and checks for errors. 

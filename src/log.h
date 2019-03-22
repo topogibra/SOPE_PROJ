@@ -2,10 +2,9 @@
 #define LOG_H
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/times.h>
+
+
+
 
 int open_file(FILE** file, const char *pathname, const char *mode);
 int close_file(FILE* file);
