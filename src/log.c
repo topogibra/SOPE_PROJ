@@ -45,7 +45,6 @@ void log_activity(FILE* file, double initialTime, char* eventDescription) {
     double timeStamp = (currentTime - initialTime);
     pid_t pid = getpid();
 
-    sprintf(buffer, "%4.20f - %d - %s", (double)timeStamp, pid, eventDescription);
-    printf("%s", buffer);
+    sprintf(buffer, "%f - %d - %s", timeStamp, pid, eventDescription);
+    fprintf(file, "%s", buffer);
 }
-

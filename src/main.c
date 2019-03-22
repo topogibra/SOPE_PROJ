@@ -8,13 +8,11 @@
 
 int main() {
     FILE* file = NULL;
+    open_file(&file, "logfile.txt", "a");
+
     double initialTimeStamp = get_time();
     //open_file(&file, "log_entries.txt", "a");
     ////close_file(file);
-    int j;
-    for (int i=0; i < 9951969; i++)
-        for (int k=0; k < 35; k++)
-            j = 1;
 /*
     char* checksum = gen_checksum("src/main.c", "sha256sum");
     printf("%s\n", checksum);
