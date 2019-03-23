@@ -6,6 +6,39 @@
 #include <time.h>
 #include <unistd.h>
 
+static FILE * file = NULL;
+static double initialTime = 0;
+
+/**
+ * Sets the global variable file
+ * @param file_temp The file to which log_activity will write
+ */
+
+void set_file(FILE* file_temp){
+  file = file_temp;
+}
+/**
+ * Get the global variable file
+ * @return file
+ */
+FILE* get_file(){
+  return file;
+}
+
+/**
+ * Sets the global variable initialTime
+ * @param time The initialTime
+ */
+void set_initialTime(double time){
+  initialTime = time;
+}
+/**
+ * Get the initialTime
+ * @return Initial time
+ */
+double get_initialTime(){
+  return initialTime;
+}
 
 /**
  * @brief Opens a file and checks for errors
@@ -36,7 +69,7 @@ int open_file(FILE** file, const char *pathname, const char *mode) {
 int close_file(FILE* file) {
     int return_value;
     if((return_value=fclose(file)) == EOF) {
-        perror("Failed to close file"); 
+        perror("Failed to close file");
         exit(2);
     }
     return 0;
@@ -60,12 +93,9 @@ double get_time() {
 
 /**
  * @brief Writes to a file information about a certain program action
- *
- * @param file The file that will receive the log info
- * @param initialTime The time when the program started executing
  * @param eventDescription Text describing the information that will be written to the file
  */
-void log_activity(FILE* file, double initialTime, char* eventDescription) {
+void log_activity( char* eventDescription) {
     char buffer[1024];
     double currentTime = get_time();
     double timeStamp = (currentTime - initialTime);

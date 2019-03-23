@@ -11,6 +11,8 @@ int main() {
     open_file(&file, "logfile.txt", "a");
 
     double initialTimeStamp = get_time();
+    set_file(file);
+    set_initialTime(initialTimeStamp);
     //open_file(&file, "log_entries.txt", "a");
     ////close_file(file);
 /*
@@ -18,7 +20,7 @@ int main() {
     printf("%s\n", checksum);
     free(checksum);
     */
-    log_activity(file, initialTimeStamp, "Computed log\n");
+    log_activity("Computed log\n");
 
     /*
     char *flagArguments[NO_FLAGS];
@@ -50,7 +52,7 @@ int main() {
     }
 
     setFlags(hash,num_hash);
-    
+
     info(flagArguments[NO_FLAGS-1]);
 
     if(flags & SAVECSV){
