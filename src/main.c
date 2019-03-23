@@ -1,21 +1,21 @@
-
-#include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "dirtree.h"
+#include "parser.h"
 #include "file.h"
-
+#include "log.h"
 
 #define NO_FLAGS 3
 
-
-
 int main(int argc, char *argv[]) {
-    /**
-    char* checksum = gen_checksum("../src/main.c", "sha256sum");
-    printf("%s\n", checksum);
-    free(checksum);
-     */
+    FILE* file = NULL;
+    open_file(&file, "logfile.txt", "a");
+
+    double initialTimeStamp = get_time();
+    set_file(file);
+    set_initialTime(initialTimeStamp);
+
+    log_activity("Started.");
 
 
     char *flagArguments[NO_FLAGS];
@@ -32,6 +32,9 @@ int main(int argc, char *argv[]) {
     if(flags & CLCHASH){
       num_hash = getHashArguments(flagArguments[0],hash);
     }
+    if(flags & SRECURS){
+      setLDTflag(R_LIST);
+    }
 
     int output = STDOUT_FILENO;
 
@@ -47,12 +50,16 @@ int main(int argc, char *argv[]) {
     }
 
     setFlags(hash,num_hash);
-    
-    info(flagArguments[NO_FLAGS-1]);
+
+    //info(flagArguments[NO_FLAGS-1]);
+
+    listdtree(flagArguments[NO_FLAGS-1] , info);
 
     if(flags & SAVECSV){
       close(output);
     }
+
+    log_activity("Finished.");
 
     return 0;
 }

@@ -19,63 +19,73 @@ void setFlags(char * hash[], int8_t hash_flags){
   * Displays files system info.
   * @param sb pointer to a struct stat of a file
   */
-void display_stat_info(struct stat *sb){
-  printf("%lld",(long long) sb->st_size); //size
-  printf(", %x", sb->st_mode);
-  printf(", %x", sb->st_mode & 0x0777 ); //permisions
-  printf(", " );
+char * display_stat_info(struct stat *sb){
+  char * str = malloc(sizeof(char) * 512);
+  sprintf(str,"%lld, %x, %x, ",(long long) sb->st_size,sb->st_mode,sb->st_mode & 0x0777);
   for(int x = 0x00400,i = 0;x!=0;x>>=1,i++){   //print permissions
     if(sb->st_mode & x){
       switch (i%3) {
         case 0:
-          printf("r");
+          strcat(str,"r");
         break;
         case 1:
-          printf("w");
+          strcat(str,"w");
         break;
         case 2:
-          printf("x");
+          strcat(str,"x");
         break;
         default:
         break;
       }
     }
     else
-        printf("-");
+        strcat(str,"-");
     if(i%3==2)
       x>>=1;
   }
-  printf(", ");
+  strcat(str,", ");
   char date[21];
   strftime(date, 21, "%Y-%m-%dT%H:%M:%S", localtime(&(sb->st_mtime))); //modification
-  printf("%s",date );
-  printf(", ");
+  strcat(str,date);
+  strcat(str,", ");
   strftime(date, 21, "%Y-%m-%dT%H:%M:%S", localtime(&(sb->st_ctime))); //status
-  printf("%s",date );
+  strcat(str,date);
+  return str;
 }
 
 /**
   * Displays file fingerprints.
   * @param file_path file path of the file
   */
-void display_fingerprints(char * file_path){
+char * display_fingerprints(char * file_path){
+  char * hash = malloc(sizeof(char) * 512);
+  char * temp = NULL;
   for(int i = 0; i < num_flags;++i){
     if(!strcmp(hash_passed[i],"md5"))
-      printf(", %s", gen_checksum(file_path,"md5sum"));
+      temp = gen_checksum(file_path,"md5sum");
     else if(!strcmp(hash_passed[i],"sha1"))
-      printf(", %s", gen_checksum(file_path,"sha1sum"));
+      temp = gen_checksum(file_path,"sha1sum");
     else if(!strcmp(hash_passed[i],"sha256"))
-      printf(", %s", gen_checksum(file_path,"sha256sum"));
+      temp = gen_checksum(file_path,"sha256sum");
+    if(temp != NULL){
+      strcat(hash,", ");
+      strcat(hash,temp);
+      free(temp);
+      temp = NULL;
+    }
   }
+  return hash;
 }
 
 /**
   * Displays file type info.
   * @param file_path file path of the file
   */
-void display_file_type(char * file_path){
+char * display_file_type(char * file_path){
   int link[2];
   char temp[128];
+
+  char * str = NULL;
 
   if(pipe(link) == -1)
     exit(EXIT_FAILURE);
@@ -98,7 +108,12 @@ void display_file_type(char * file_path){
       nbytes+=n_aux;
     }
 
-    write(STDOUT_FILENO,temp,nbytes-1);
+    //write(STDOUT_FILENO,temp,nbytes-1);
+    str = malloc(sizeof(char) * nbytes);
+    memcpy(str,temp,sizeof(char) * (nbytes-1));
+    str[nbytes-1] = '\0';
+    close(link[0]);
+    return str;
 
   }else{ //filho
     if(dup2(link[1],STDOUT_FILENO)==-1){
@@ -110,6 +125,7 @@ void display_file_type(char * file_path){
     execlp("file","file",file_path,NULL);
     exit(1);
   }
+  return str;
 }
 
 
@@ -128,12 +144,26 @@ void info(char * file_path){
   }
 
   if(S_ISREG(sb.st_mode)){
+    char * str = malloc(sizeof(char) * 1024);
+    char * temp = NULL;
 
-    display_file_type(file_path);
-    printf(", ");
-    display_stat_info(&sb);
-    display_fingerprints(file_path);
-    printf("\n" );
+    temp = display_file_type(file_path);
+    strcat(str,temp);
+    free(temp);
+
+    strcat(str,", ");
+
+    temp = display_stat_info(&sb);
+    strcat(str,temp);
+    free(temp);
+
+    temp = display_fingerprints(file_path);
+    strcat(str,temp);
+    free(temp);
+
+    printf("%s\n",str );
+
+    free(str);
 
   }
 }

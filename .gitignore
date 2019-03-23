@@ -7,9 +7,5 @@ cmake_install.cmake
 forensic
 .vscode/*
 build/*
-CMakeCache.txt
-CMakeFiles/
-Makefile
-cmake_install.cmake
-forensic
-teste/*
+
+*.swp
