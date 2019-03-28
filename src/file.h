@@ -16,7 +16,7 @@
 #include <sys/wait.h>
 
 #include <time.h>
-#include <sys/sysmacros.h>
+//#include <sys/sysmacros.h>
 
 
 void setFlags(char * hash[], int8_t hash_flags);
