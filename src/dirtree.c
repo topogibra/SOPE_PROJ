@@ -1,4 +1,5 @@
 #include "dirtree.h"
+#include "log.h"
 #include <dirent.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -38,7 +39,13 @@ int listdtree(char* path, void (*f)(char*)) {
       strcat(newpath, entry->d_name);
       if (flag & R_LIST) {
         pid_t pid = fork();
-        if (pid == 0) {
+        
+        
+        if (pid != 0) {
+          char log[500];
+          sprintf(log, "Found a file. Spawning new child with PID %d", pid);
+          log_activity(log);
+        }else { //child
           is_child = true;
           if (flag & A_DIR) {
             f(newpath);
