@@ -1,14 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include "parser.h"
 #include "file.h"
 #include "log.h"
 
 #define NO_FLAGS 3
 
+void sigint_handler(int signal) {
+    printf("Finishing tasks before closing...\n");
+    wait(-1);
+    printf("%d\n", getpid());
+    exit(1);
+}
+
 int main() {
     FILE* file = NULL;
     open_file(&file, "logfile.txt", "a");
+
+    struct sigaction action;
+    action.sa_handler = sigint_handler;
+    action.sa_flags = 0;
+
+    sigaction(SIGINT, &action, NULL);
+
+    fork();
+
+    while(1);
 
     double initialTimeStamp = get_time();
     set_file(file);
