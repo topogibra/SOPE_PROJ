@@ -4,11 +4,10 @@
 #include "file.h"
 #include "log.h"
 #include "parser.h"
-
 #define NO_FLAGS 3
 
 int main(int argc, char* argv[]) {
-  FILE* file = NULL;
+      FILE* file = NULL;
   open_file(&file, "logfile.txt", "a");
 
   printf("%d\n", getpid());
