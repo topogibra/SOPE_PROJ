@@ -80,8 +80,6 @@ int listdtree(char* path, void (*f)(char*)) {
     }
     if (entry->d_type == DT_DIR) {
       // sprintf(currentdir, "/%s", entry->d_name);
-      // killpg(0, SIGUSR2);
-      dirlog(NULL);
       if (flag & R_LIST) {
         pid_t pid = fork();
 
@@ -95,6 +93,8 @@ int listdtree(char* path, void (*f)(char*)) {
           chdir(entry->d_name);
           closedir(dir);
           dir = opendir(".");
+          // killpg(0, SIGUSR2);
+          dirlog(NULL);
         }
       }
       continue;

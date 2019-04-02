@@ -1,13 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "dirtree.h"
+#include "analyzer.h"
 #include "file.h"
 #include "log.h"
 #include "parser.h"
 #define NO_FLAGS 3
 
+void f(char* p) {
+  printf("%s\n", p);
+}
+
 int main(int argc, char* argv[]) {
-      FILE* file = NULL;
+  FILE* file = NULL;
   open_file(&file, "logfile.txt", "a");
 
   printf("%d\n", getpid());
@@ -32,7 +36,8 @@ int main(int argc, char* argv[]) {
     num_hash = getHashArguments(flagArguments[0], hash);
   }
   if (flags & SRECURS) {
-    setLDTflag(R_LIST);
+    // setLDTflag(R_LIST);
+    set_recur(true);
   }
 
   int output = STDOUT_FILENO;
@@ -53,7 +58,8 @@ int main(int argc, char* argv[]) {
 
   // info(flagArguments[NO_FLAGS-1]);
 
-  listdtree(flagArguments[NO_FLAGS - 1], info);
+  // listdtree(flagArguments[NO_FLAGS - 1], info);
+  analyzer(flagArguments[NO_FLAGS - 1], f);
 
   if (flags & SAVECSV) {
     close(output);
