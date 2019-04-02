@@ -27,10 +27,9 @@ char * display_stat_info(struct stat *sb){
       switch (i%3) {
         case 0:
           strcat(str,"r");
-        break;
-        case 1:
-          strcat(str,"w");
-        break;
+          break;
+          case 1 : strcat(str, "w");
+          break;
         case 2:
           strcat(str,"x");
         break;

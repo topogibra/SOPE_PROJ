@@ -16,13 +16,16 @@ u_int8_t flag = 0x0;
 int nofiles = 0;
 int nodir = 0;
 
+void dirlog(char* nlog);
+
 void usr1_file_handler(int signo) {
-  printf("hello\n");
+  // printf("hello\n");
+  nofiles++;
   // aqui seria nofiles++
 }
 
 void usr2_dir_handler(int signo) {
-  printf("hello\n");
+  nodir++;
   // aqui seria nodir ++
 }
 
@@ -31,13 +34,13 @@ void set_handlers(struct sigaction* sig1, struct sigaction* sig2) {
 
   // usr1
   sig.sa_handler = usr1_file_handler;
-  sig.sa_flags = 0;
+  sig.sa_flags = SA_RESTART;
 
   sigaction(SIGUSR1, &sig, sig1);
 
   // usr2
   sig.sa_handler = usr2_dir_handler;
-  sig.sa_flags = 0;
+  sig.sa_flags = SA_RESTART;
 
   sigaction(SIGUSR2, &sig, sig2);
 }
@@ -61,7 +64,7 @@ int listdtree(char* path, void (*f)(char*)) {
   set_handlers(&sig1, &sig2);
 
   if (setpgid(getpid(), 0) != 0) {
-    printf("Merdou");
+    printf("Failed to set pgid");
     exit(-1);
   }
 
@@ -78,17 +81,12 @@ int listdtree(char* path, void (*f)(char*)) {
       getcwd(newpath, PATH_MAX);
       strcat(newpath, "/");
       strcat(newpath, entry->d_name);
+      killpg(0, SIGUSR2);
+      dirlog(NULL);
       if (flag & R_LIST) {
         pid_t pid = fork();
 
-        if (pid != 0) {
-          killpg(0, SIGUSR2);
-          char log[PATH_MAX];
-          sprintf(log,
-                  "New directory: %d/%d directories/files at this time. %s",
-                  nodir, nofiles, newpath);
-          log_activity(log);
-        } else {  // child
+        if (pid == 0) {  // child
           is_child = true;
           if (flag & A_DIR) {
             f(newpath);
@@ -98,13 +96,20 @@ int listdtree(char* path, void (*f)(char*)) {
           dir = opendir(".");
         }
       }
-    } else if (entry->d_type == DT_REG) {
-      // killpg(0, SIGUSR1);
+      continue;
+    }
+    if (entry->d_type == DT_REG) {
+      killpg(0, SIGUSR1);
       char newpath[PATH_MAX];
       getcwd(newpath, PATH_MAX);
       strcat(newpath, "/");
       strcat(newpath, entry->d_name);
       f(newpath);
+      continue;
+    } else {
+      char tmp[500];
+      strcat(tmp, "IDK WTF IS THIS\n");
+      dirlog(tmp);
     }
   }
 
@@ -126,6 +131,18 @@ int listdtree(char* path, void (*f)(char*)) {
   sigaction(SIGUSR2, &sig2, NULL);
 
   return 0;
+}
+
+void dirlog(char* nlog) {
+  char log[PATH_MAX];
+  if (nlog == NULL) {
+    sprintf(log, "New directory: %d/%d directories/files at this time.", nodir,
+            nofiles);
+  } else {
+    log_activity(nlog);
+    return;
+  }
+  log_activity(log);
 }
 
 void setLDTflag(u_int8_t fla) {
