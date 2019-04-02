@@ -19,13 +19,15 @@ int nodir = 0;
 void dirlog(char* nlog);
 
 void usr1_file_handler(int signo) {
-  // printf("hello\n");
-  nofiles++;
+  // nofiles++;
+  printf("%p\n", &nofiles);
+
   // aqui seria nofiles++
 }
 
 void usr2_dir_handler(int signo) {
-  nodir++;
+  // nodir++;
+  printf("%p\n", &nodir);
   // aqui seria nodir ++
 }
 
@@ -49,13 +51,13 @@ int listdtree(char* path, void (*f)(char*)) {
   struct sigaction sig1, sig2;
 
   // Safeguard to maintain the current working directory
-  char current_dir[PATH_MAX];
+  char workdir[PATH_MAX];
+  char currentdir[PATH_MAX];
+  sprintf(currentdir, "#");
   DIR* dir;
 
   struct dirent* entry;
   bool is_child = false;
-
-  getcwd(current_dir, PATH_MAX);
 
   if (chdir(path) != 0) {
     exit(4);
@@ -77,21 +79,20 @@ int listdtree(char* path, void (*f)(char*)) {
       continue;
     }
     if (entry->d_type == DT_DIR) {
-      char newpath[PATH_MAX];
-      getcwd(newpath, PATH_MAX);
-      strcat(newpath, "/");
-      strcat(newpath, entry->d_name);
-      killpg(0, SIGUSR2);
+      // sprintf(currentdir, "/%s", entry->d_name);
+      // killpg(0, SIGUSR2);
       dirlog(NULL);
       if (flag & R_LIST) {
         pid_t pid = fork();
 
         if (pid == 0) {  // child
+          sprintf(currentdir, "%s%s",
+                  (!is_child) ? "" : strcat(currentdir, "/"), entry->d_name);
           is_child = true;
           if (flag & A_DIR) {
-            f(newpath);
+            f(currentdir);
           }
-          chdir(newpath);
+          chdir(entry->d_name);
           closedir(dir);
           dir = opendir(".");
         }
@@ -100,11 +101,10 @@ int listdtree(char* path, void (*f)(char*)) {
     }
     if (entry->d_type == DT_REG) {
       killpg(0, SIGUSR1);
-      char newpath[PATH_MAX];
-      getcwd(newpath, PATH_MAX);
-      strcat(newpath, "/");
-      strcat(newpath, entry->d_name);
-      f(newpath);
+      if (is_child) {
+        printf("%s/", currentdir);
+      }
+      f(entry->d_name);
       continue;
     } else {
       char tmp[500];
@@ -123,7 +123,7 @@ int listdtree(char* path, void (*f)(char*)) {
     exit(0);
   }
   closedir(dir);
-  chdir(current_dir);
+  chdir(workdir);
 
   // Reset usr1 and usr2 handlers
 
