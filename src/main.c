@@ -6,6 +6,8 @@
 #include "parser.h"
 #define NO_FLAGS 3
 
+pid_t all_father;
+
 void f(char* p) {
   printf("%s\n", p);
 }
@@ -13,12 +15,9 @@ void f(char* p) {
 int main(int argc, char* argv[]) {
   FILE* file = NULL;
   open_file(&file, "logfile.txt", "a");
-
-  printf("%d\n", getpid());
-
-  double initialTimeStamp = get_time();
+  all_father = getpid();
   set_file(file);
-  set_initialTime(initialTimeStamp);
+  set_initialTime();
 
   log_activity("Started.");
 
@@ -36,7 +35,6 @@ int main(int argc, char* argv[]) {
     num_hash = getHashArguments(flagArguments[0], hash);
   }
   if (flags & SRECURS) {
-    // setLDTflag(R_LIST);
     set_recur(true);
   }
 
@@ -56,9 +54,6 @@ int main(int argc, char* argv[]) {
 
   setFlags(hash, num_hash);
 
-  // info(flagArguments[NO_FLAGS-1]);
-
-  // listdtree(flagArguments[NO_FLAGS - 1], info);
   analyzer(flagArguments[NO_FLAGS - 1], f);
 
   if (flags & SAVECSV) {

@@ -21,7 +21,7 @@ int8_t parseArguments(int argc,
                       char* argv[],
                       char* flagArguments[],
                       size_t num_flags) {
-  int opt;
+  char opt;
   char* cvalue = NULL;
 
   if (argc == 1) {

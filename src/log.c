@@ -7,7 +7,11 @@
 #include <unistd.h>
 
 static FILE* file = NULL;
-static double initialTime = 0;
+extern pid_t all_father;
+static struct timespec initialTime;
+static clockid_t clockid;
+
+void get_time(struct timespec* ts);
 
 /**
  * Sets the global variable file
@@ -29,15 +33,8 @@ FILE* get_file() {
  * Sets the global variable initialTime
  * @param time The initialTime
  */
-void set_initialTime(double time) {
-  initialTime = time;
-}
-/**
- * Get the initialTime
- * @return Initial time
- */
-double get_initialTime() {
-  return initialTime;
+void set_initialTime() {
+  get_time(&initialTime);
 }
 
 /**
@@ -79,13 +76,9 @@ int close_file(FILE* file) {
  *
  * @return The time of the system
  */
-double get_time() {
-  clock_t time;
-  if ((time = clock()) == -1) {
-    perror("Could not get time");
-    exit(1);
-  }
-  return (double)time / CLOCKS_PER_SEC;
+void get_time(struct timespec* ts) {
+  clock_getcpuclockid(all_father, &clockid);
+  clock_gettime(clockid, ts);
 }
 
 /**
@@ -95,16 +88,20 @@ double get_time() {
  */
 void log_activity(char* eventDescription) {
   char buffer[1024];
-  double currentTime = get_time();
-  double timeStamp = (currentTime - initialTime);
-  pid_t pid = getpid();
-
+  struct timespec currentTime;
+  get_time(&currentTime);
+  double timeStamp = difftimespecms(currentTime, initialTime);
   if (strcmp(eventDescription, "") == 0) {
     printf("Event description cannot be an empty string");
     exit(1);
   }
-
-  sprintf(buffer, "%.2f - %d - %s\n", timeStamp * 1000, pid, eventDescription);
+  sprintf(buffer, "%.2lf - %d - %s\n", timeStamp, getpid(), eventDescription);
   fprintf(file, "%s", buffer);
   fflush(file);
+}
+
+double difftimespecms(struct timespec ts1, struct timespec ts2) {
+  long long nsec = ts1.tv_nsec - ts2.tv_nsec;
+  time_t sec = ts1.tv_sec - ts2.tv_sec;
+  return (double)(nsec / 10e06 + sec * 1000);
 }
