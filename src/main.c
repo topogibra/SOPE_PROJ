@@ -8,7 +8,8 @@
 
 int main() {
     FILE* file = NULL;
-    open_file(&file, "logfile.txt", "a");
+    const char* envvar = getenv("LOGFILENAME");
+    open_file(&file, (envvar == NULL) ? "logfile.txt" : envvar, "a");
 
     double initialTimeStamp = get_time();
     set_file(file);
