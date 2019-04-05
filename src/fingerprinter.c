@@ -114,6 +114,7 @@ void get_hash_from_pipe(int fd[], int checksum_size, char* checksum) {
     perror("Error reading from pipe to buffer");
     exit(8);
   }
+  checksum[checksum_size] = '\0';
   wait(&stat);
   // Truncate array so that string finishes where it's supposed to
   // checksum[checksum_size + 1] = '\0';

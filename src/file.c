@@ -60,6 +60,7 @@ char* display_stat_info(struct stat* sb, char* str) {
  * @param file_path file path of the file
  */
 void display_fingerprints(char* file_path, char* hash) {
+  
   // char tmp[2048];
   int comma = 0;
   for (int i = 0; i < num_flags; ++i) {
@@ -96,6 +97,8 @@ void display_fingerprints(char* file_path, char* hash) {
       strcat(hash, ", ");
     }
   }
+
+
 }
 
 /**
@@ -119,13 +122,20 @@ void display_file_type(char* file_path, char* str) {
   } else if (pid != 0) {  // pai
 
     close(link[1]);
-    waitpid(pid, &status, 0);
+    /*waitpid(pid, &status, 0);
 
     int nbytes = 0;
     int n_aux = 0;
     while ((n_aux = read(link[0], temp + nbytes, sizeof(temp) - nbytes)) > 0) {
       nbytes += n_aux;
+    }*/
+
+    //wait(&status);
+
+    while(read(link[0] , temp,sizeof(temp)-1) > 0){
+      strcat(str,temp);
     }
+
     sprintf(str, "%s", temp);
     // strcpy(str, temp);
     close(link[0]);
@@ -137,7 +147,6 @@ void display_file_type(char* file_path, char* str) {
       exit(1);
     }
     close(link[0]);
-    close(link[1]);
     execlp("file", "file ", "-b", file_path, NULL);
     exit(1);
   }
