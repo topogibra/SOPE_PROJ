@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
 
   setFlags(hash, num_hash);
 
-  analyzer(flagArguments[NO_FLAGS - 1], f);
+  analyzer(flagArguments[NO_FLAGS - 1], info);
 
   if (flags & SAVECSV) {
     close(output);

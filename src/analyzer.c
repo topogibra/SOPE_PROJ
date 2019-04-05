@@ -86,6 +86,7 @@ void analyzer(char* path, void (*f)(char*)) {
       continue;
     }
     sprintf(entrypath, "%s%s", (all_father) ? "" : currentdir, entry->d_name);
+
     if (entry->d_type == DT_DIR) {
       killpg(0, SIGUSR2);
       dirlog(NULL);
@@ -105,7 +106,7 @@ void analyzer(char* path, void (*f)(char*)) {
     if (entry->d_type == DT_REG) {
       killpg(0, SIGUSR1);
       if (!all_father) {
-        printf("%s", currentdir);
+        // printf("%s", currentdir);
       }
       f(entry->d_name);
     }
@@ -115,9 +116,11 @@ void analyzer(char* path, void (*f)(char*)) {
     wait(NULL);
   }
 
-  if (all_father) {
-    printf("Files/Dir %d/%d\n", nofiles, nodir);
-  }
+  // if (all_father) {
+  //   printf("Files/Dir %d/%d\n", nofiles, nodir);
+  // }
 
+  sigaction(SIGUSR1, &sig1, NULL);
+  sigaction(SIGUSR2, &sig2, NULL);
   closedir(dir);
 }
