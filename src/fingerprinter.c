@@ -147,6 +147,7 @@ void gen_checksum(char* file_name, char* hash_program, char* checksum) {
     perror("Error creating fork");
     exit(4);
   } else if (pid == 0) {
+    setpgid(0,getpid());
     exec_hash_command(fd, hash_program, file_name);
   } else {
     get_hash_from_pipe(fd, checksum_size, checksum);

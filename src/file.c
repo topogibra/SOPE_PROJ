@@ -61,6 +61,7 @@ char* display_stat_info(struct stat* sb, char* str) {
  */
 void display_fingerprints(char* file_path, char* hash) {
   // char tmp[2048];
+  sprintf(hash, "%s", "");
   int comma = 0;
   for (int i = 0; i < num_flags; ++i) {
     if (hash_passed[i] != NULL) {
@@ -133,7 +134,6 @@ void display_file_type(char* file_path, char* str) {
         temp[res - 1] = 0;
       temp[res] = 0;
       strcat(str, temp);
-      printf("%s\n", temp);
     }
 
     // sprintf(str, "%s", temp);
@@ -143,12 +143,13 @@ void display_file_type(char* file_path, char* str) {
     return;
 
   } else {  // filho
+    setpgid(0, getpid());
     if (dup2(link[1], STDOUT_FILENO) == -1) {
       perror("dup2");
       exit(1);
     }
     close(link[0]);
-    execlp("file", "file", file_path, NULL);
+    execlp("file", "file", "-b", file_path, NULL);
     exit(1);
   }
 }
@@ -159,76 +160,37 @@ void display_file_type(char* file_path, char* str) {
  * fingerprints specified by the file global variables.
  * @param path of the file in which the fuction will be applied
  */
+void info1(char* file_path, char* buf);
+
 void info(char* file_path) {
-  int link[2];
-  char str[PATH_MAX];
-  char command[PATH_MAX];
-
-  sprintf(command, "file -b %s", file_path);
-
-  pipe(link);
-
-  pid_t pid = fork();
-
-  if (pid == 0) {
-    close(link[0]);
-    dup2(link[1], STDOUT_FILENO);
-    execlp("file", "file", "-b", file_path, NULL);
-  } else {
-    close(link[1]);
-    waitpid(pid, NULL, 0);
-
-    int res;
-    res = read(link[0], str, PATH_MAX);
-    str[res - 1] = 0;
-    puts(str);
+  struct stat sb;
+  if (lstat(file_path, &sb) == -1) {
+    perror("lstat");
+    exit(EXIT_FAILURE);
   }
-
-  // fgets(str, PATH_MAX, pin);
-  // fclose(pin);
-
-  // printf("%s\n", file_path);
-  // struct stat sb;
-  // if (lstat(file_path, &sb) == -1) {
-  //   perror("lstat");
-  //   exit(EXIT_FAILURE);
-  // }
-
-  // if (S_ISREG(sb.st_mode)) {
-  // char str[PATH_MAX];
-  // char temp[2048];
+  char str[PATH_MAX];
+  char temp[2048];
   // char temp2[2048];
   // char temp3[2048];
-  // char* str = malloc(sizeof(char) * PATH_MAX + 1);
-  // char* temp = malloc(sizeof(char) * PATH_MAX);
-  // char* temp2 = malloc(sizeof(char) * PATH_MAX);
-  // char* temp3 = malloc(sizeof(char) * PATH_MAX);
 
-  // display_file_type(file_path, temp);
-  // printf("%s\n", temp);
-  // strtok(temp, ",");
-  // strtok(str, "\n");
-  // sprintf(str, "%s, %s,", file_path, temp);
-  // strcat(str, file_path);
-  // strcat(str, ", ");
-  // strcat(str, temp);
-  // strcat(str, ", ");
+  strcat(str, file_path);
+  strcat(str, ",");
 
-  // display_stat_info(&sb, temp2);
-  // strcat(str, temp2);
+  display_file_type(file_path, temp);
+  for (size_t i = 0; i < strlen(temp); i++) {
+    if (temp[i] == ',') {
+      temp[i] = ' ';
+    }
+  }
+  sprintf(str, "%s, %s,", file_path, temp);
 
-  // display_fingerprints(file_path, temp3);
-  // strcat(str, temp3);
+  display_stat_info(&sb, temp);
+  strcat(str, temp);
 
-  // printf("%s\n", str);
-  // str[0] = '\0';
-  // temp[0] = '\0';
-  // temp2[0] = '\0';
-  // temp3[0] = '\0';
+  display_fingerprints(file_path, temp);
+  strcat(str, temp);
 
-  // // free(str);
-  // // free(temp);
-  // // free(temp2);
-  // // free(temp3);
-  // }
+  printf("%s\n", str);
+  str[0] = '\0';
+  temp[0] = '\0';
 }
